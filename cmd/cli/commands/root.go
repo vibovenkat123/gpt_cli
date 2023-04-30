@@ -88,8 +88,8 @@ func Execute() {
 	rootCmd.Flags().StringVarP(&key, "key", "k", os.Getenv("OPENAI_KEY"), "The API key to use for authentication.")
 	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for more detailed output.")
 	rootCmd.Flags().IntVarP(&max_tokens, "max", "m", 2000, "The maximum number of tokens to generate. (default: 2000)")
-//	helpers.LogVerbose(verbose, "Generating man")
-//	helpers.GenerateMan(rootCmd)
+	//	helpers.LogVerbose(verbose, "Generating man")
+	//	helpers.GenerateMan(rootCmd)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
