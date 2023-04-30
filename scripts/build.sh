@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "BUILDING FOR $GOOS WITH ARCHITECTURE $GOARCH"
+env GOOS=$GOOS GOARCH=$GOARCH go build -o $1/$2_"$GOOS"_"$GOARCH" $3
