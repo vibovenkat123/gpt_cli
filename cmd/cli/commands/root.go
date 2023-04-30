@@ -32,7 +32,11 @@ Examples:
 	Args: cobra.RangeArgs(1, 21),
 	Run:  Run,
 }
-
+func LogVerbose[T any](msg T) {
+	if verbose {
+		fmt.Println(msg)
+	}
+}
 func Run(cmd *cobra.Command, args []string) {
 	prompt := args[0];
 	if len(key) == 0 {
@@ -43,6 +47,7 @@ func Run(cmd *cobra.Command, args []string) {
 		fmt.Println("The api key isn't in the right format, (must start with `sk-`")
 		os.Exit(1)
 	}
+	LogVerbose("Generating Request Struct")
 	reqJSON := helpers.ApiReq {
 		Max_tokens: max_tokens,
 		Model: "gpt-4",
@@ -53,32 +58,41 @@ func Run(cmd *cobra.Command, args []string) {
 			},
 		},
 	}
+	LogVerbose("Marshalling JSON")
 	jsonParams, err := json.Marshal(reqJSON)
 	if err != nil {
 		fmt.Println("Error while marshalling JSON", err)
 		os.Exit(1)
 	}
+	LogVerbose("Converting JSON to bytes")
 	reqBody := bytes.NewBuffer(jsonParams)
+	LogVerbose("Making new request")
 	req, err := http.NewRequest("POST", helpers.Url, reqBody)
 	if err != nil {
 		fmt.Println("Error while making request", err)
 		os.Exit(1)
 	}
+	LogVerbose("Apply headers to request")
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", key))
 	client := &http.Client{}
+	LogVerbose("Executing request")
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("Error while sending request", err)
 	}
 	defer resp.Body.Close()
+	LogVerbose("Reading Body")
 	body, _ := ioutil.ReadAll(resp.Body)
 	apiRes := helpers.ApiRes{}
+	LogVerbose("Unmarshalling Body")
 	err = json.Unmarshal([]byte(string(body)), &apiRes)
 	if err != nil {
 		fmt.Println("Error while recieving request body", err)
 		os.Exit(1)
 	}
+	LogVerbose(apiRes)
+	LogVerbose("Printing message, msg:")
 	printRes(apiRes)
 }
 
