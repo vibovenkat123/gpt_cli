@@ -79,7 +79,7 @@ func Run(cmd *cobra.Command, args []string) {
 		fmt.Println("Error while recieving request body", err)
 		os.Exit(1)
 	}
-	fmt.Println(apiRes)
+	printRes(apiRes)
 }
 
 func Execute() {
@@ -89,5 +89,11 @@ func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	}
+}
+
+func printRes(res helpers.ApiRes) {
+	for _, choice := range res.Choices {
+		fmt.Println(choice.Message.Content)
 	}
 }
